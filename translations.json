@@ -1,0 +1,98 @@
+{
+  "interface": {
+    "en": {
+      "title": "Life Span",
+      "ageResult": "Your age: {age}\nTime spent sleeping: {sleep}",
+      "workResult": "Work experience: {work}\nYou have been working for {percentage}% of your life\nTotal hours worked: {hours}",
+      "sexualLifeResult": "Sexual life experience: {sexualLife}\nYou have been sexually active for {percentage}% of your life",
+      "drivingResult": "Driving experience: {driving}\nYou have been driving for {percentage}% of your life",
+      "potentialChildren": "Number of children you could potentially have: {children}",
+      "age": "{years} years, {months} months, {days} days",
+      "work": "{years} years, {months} months, {days} days",
+      "sexualLife": "{years} years, {months} months, {days} days",
+      "driving": "{years} years, {months} months, {days} days",
+      "sleep": "{years} years, {months} months, {days} days",
+      "invalidDate": "Invalid date",
+      "invalidWorkDate": "Date cannot be before birth date",
+      "invalidSexualLifeDate": "Date cannot be before birth date",
+      "invalidDrivingDate": "Date cannot be before birth date",
+      "requiredField": "This field is required",
+      "restart": "Restart",
+      "workHours": "Total hours worked: {hours}",
+      "sleepTime": "Time spent sleeping: {sleep}",
+      "timelineTitle": "Life Timeline"
+    },
+    "ru": {
+      "title": "Продолжительность жизни",
+      "ageResult": "Ваш возраст: {age}\nВремя, потраченное на сон: {sleep}",
+      "workResult": "Трудовой стаж: {work}\nВы работаете {percentage}% своей жизни\nВсего отработано часов: {hours}",
+      "sexualLifeResult": "Стаж половой жизни: {sexualLife}\nВы ведете половую жизнь {percentage}% своей жизни",
+      "drivingResult": "Водительский стаж: {driving}\nВы водите {percentage}% своей жизни",
+      "potentialChildren": "Число детей, которые потенциально могли бы у тебя быть: {children}",
+      "age": "{years}, {months}, {days}",
+      "work": "{years}, {months}, {days}",
+      "sexualLife": "{years}, {months}, {days}",
+      "driving": "{years}, {months}, {days}",
+      "sleep": "{years}, {months}, {days}",
+      "invalidDate": "Неверная дата",
+      "invalidWorkDate": "Дата не может быть раньше даты рождения",
+      "invalidSexualLifeDate": "Дата не может быть раньше даты рождения",
+      "invalidDrivingDate": "Дата не может быть раньше даты рождения",
+      "requiredField": "Это поле обязательно",
+      "restart": "Пройти заново",
+      "workHours": "Всего отработано часов: {hours}",
+      "sleepTime": "Время, потраченное на сон: {sleep}",
+      "timelineTitle": "Линия жизни"
+    }
+  },
+  "questions": [
+    {
+      "type": "date",
+      "resultType": "age",
+      "title": {
+        "en": "Age",
+        "ru": "Возраст"
+      },
+      "text": {
+        "en": "What is your date of birth?",
+        "ru": "Когда вы родились?"
+      }
+    },
+    {
+      "type": "date",
+      "resultType": "workExperience",
+      "title": {
+        "en": "Work Experience",
+        "ru": "Трудовой стаж"
+      },
+      "text": {
+        "en": "When did you start your first job?",
+        "ru": "Когда вы начали свою первую работу?"
+      }
+    },
+    {
+      "type": "month",
+      "resultType": "sexualLifeExperience",
+      "title": {
+        "en": "Sexual Life Experience",
+        "ru": "Стаж половой жизни"
+      },
+      "text": {
+        "en": "When did you start your sexual life?",
+        "ru": "Когда вы начали жить половой жизнью?"
+      }
+    },
+    {
+      "type": "month",
+      "resultType": "drivingExperience",
+      "title": {
+        "en": "Driving Experience",
+        "ru": "Водительский стаж"
+      },
+      "text": {
+        "en": "When did you start driving?",
+        "ru": "Когда вы сели за руль?"
+      }
+    }
+  ]
+}
