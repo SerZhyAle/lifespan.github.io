@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Анкета</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; }
+    .result { margin-top: 20px; }
+  </style>
+</head>
+<body>
+  <h1>Простая анкета</h1>
+  <form id="quizForm">
+    <p>Какой ваш любимый цвет?</p>
+    <input type="radio" name="color" value="red"> Красный<br>
+    <input type="radio" name="color" value="blue"> Синий<br>
+    <button type="submit">Узнать результат</button>
+  </form>
+  <div class="result" id="result"></div>
+
+  <script>
+    document.getElementById('quizForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const color = document.querySelector('input[name="color"]:checked').value;
+      const result = color === 'red' ? 'Вы энергичны!' : 'Вы спокойны!';
+      document.getElementById('result').innerText = result;
+    });
+  </script>
+</body>
+</html>
