@@ -1,10 +1,13 @@
+#sza250425
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import os
 from datetime import datetime
+import ssl
 
 app = Flask(__name__)
-CORS(app, resources={r"/log": {"origins": "*"}})
+CORS(app, resources={r"/log": {"origins": "https://serzhyale.github.io"}})
+#CORS(app, resources={r"/log": {"origins": "*"}})
 
 LOG_FILE = "logs.txt"
 
@@ -39,8 +42,12 @@ def log_message():
         return jsonify({"status": "error", "message": str(e)}), 500
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=False, threaded=True)
+    # Настройка SSL-контекста
+    context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+    #context.load_cert_chain(certfile='C:/Certbot/live/mylifespanlog.com/fullchain.pem', 
+    #                       keyfile='C:/Certbot/live/mylifespanlog.com/privkey.pem')
     
-    #context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
-    #context.load_cert_chain(certfile='cert.pem', keyfile='key.pem')    
-    #app.run(host='0.0.0.0', port=5000, debug=False, threaded=True, ssl_context=context)
+    context.load_cert_chain(certfile='cert.pem', keyfile='key.pem')    
+    app.run(host='0.0.0.0', port=5000, debug=False, threaded=True, ssl_context=context)
+    
+    #app.run(host='0.0.0.0', port=5000, debug=False, threaded=True)
