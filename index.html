@@ -85,7 +85,7 @@
   <div class="container">
     <div class="timeline-container">
       <h2 id="timelineTitle"></h2>
-      <canvas id="timelineCanvas" width="350" height="百600"></canvas>
+      <canvas id="timelineCanvas" width="350" height="600"></canvas>
     </div>
     <div class="form-container">
       <form id="quizForm"></form>
@@ -375,12 +375,12 @@
       answers[`question${index}`] = input.value;
 
       const eventNames = {
-        0: 'Дата рождения',
-        1: 'Начало работы',
-        2: 'Начало половой жизни',
-        3: 'Начало вождения'
+        0: 'DOB',
+        1: 'BOW',
+        2: 'BOS',
+        3: 'BOD'
       };
-      const eventName = eventNames[index] || 'Неизвестное событие';
+      const eventName = eventNames[index] || 'Unknown';
       if (input.value) {
         logData(`${eventName} - ${input.value}`);
       }

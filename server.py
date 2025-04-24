@@ -27,8 +27,9 @@ def log_message():
         data = request.get_json()
         message = data.get('log', '')
 
+        client_ip = request.remote_addr
         timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        log_entry = f"[{timestamp}] {message}\n"
+        log_entry = f"[{timestamp}] {client_ip} - {message}\n"
 
         with open(LOG_FILE, 'a', encoding='utf-8') as f:
             f.write(log_entry)
@@ -38,4 +39,4 @@ def log_message():
         return jsonify({"status": "error", "message": str(e)}), 500
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=False)
+    app.run(host='0.0.0.0', port=5000, debug=False, threaded=True)
