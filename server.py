@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import os
 from datetime import datetime
+import ssl
 
 app = Flask(__name__)
 CORS(app, resources={r"/log": {"origins": "*"}})
@@ -39,4 +40,7 @@ def log_message():
         return jsonify({"status": "error", "message": str(e)}), 500
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=False, threaded=True)
+    context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+    context.load_cert_chain(certfile='cert.pem', keyfile='key.pem')
+    
+    app.run(host='0.0.0.0', port=5000, debug=False, threaded=True, ssl_context=context)
