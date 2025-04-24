@@ -1,32 +1,102 @@
 <!DOCTYPE html>
-
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Анкета</title>
   <style>
-    body { font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; }
-    .result { margin-top: 20px; }
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .question {
+      margin-bottom: 20px;
+    }
+    .result {
+      margin-top: 20px;
+      font-weight: bold;
+    }
+    button {
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
   </style>
 </head>
 <body>
   <h1>Простая анкета</h1>
-  <form id="quizForm">
-    <p>Какой ваш любимый цвет?</p>
-    <input type="radio" name="color" value="red"> Красный<br>
-    <input type="radio" name="color" value="blue"> Синий<br>
-    <button type="submit">Узнать результат</button>
-  </form>
+  <form id="quizForm"></form>
   <div class="result" id="result"></div>
 
   <script>
+    async function loadQuestions() {
+      try {
+        const response = await fetch('questions.json');
+        const questions = await response.json();
+        renderForm(questions);
+      } catch (error) {
+        console.error('Ошибка загрузки вопросов:', error);
+        document.getElementById('quizForm').innerHTML = '<p>Ошибка загрузки анкеты.</p>';
+      }
+    }
+
+    function renderForm(questions) {
+      const form = document.getElementById('quizForm');
+      form.innerHTML = ''; // Очищаем форму
+
+      questions.forEach((q, index) => {
+        const questionDiv = document.createElement('div');
+        questionDiv.className = 'question';
+        questionDiv.innerHTML = `<p>${index + 1}. ${q.text}</p>`;
+
+        q.options.forEach((option, i) => {
+          const input = document.createElement('input');
+          input.type = 'radio';
+          input.name = `question${index}`;
+          input.value = option.value;
+          input.id = `q${index}_o${i}`;
+          input.required = true;
+
+          const label = document.createElement('label');
+          label.htmlFor = input.id;
+          label.textContent = option.text;
+
+          questionDiv.appendChild(input);
+          questionDiv.appendChild(label);
+          questionDiv.appendChild(document.createElement('br'));
+        });
+
+        form.appendChild(questionDiv);
+      });
+
+      const submitButton = document.createElement('button');
+      submitButton.type = 'submit';
+      submitButton.textContent = 'Узнать результат';
+      form.appendChild(submitButton);
+    }
+
     document.getElementById('quizForm').addEventListener('submit', (e) => {
       e.preventDefault();
-      const color = document.querySelector('input[name="color"]:checked').value;
-      const result = color === 'red' ? 'Вы энергичны!' : 'Вы спокойны!';
+      const formData = new FormData(e.target);
+      let score = 0;
+
+      formData.forEach((value) => {
+        score += parseInt(value);
+      });
+
+      const result = score >= 3 ? 'Вы экстраверт!' : 'Вы интроверт!';
       document.getElementById('result').innerText = result;
     });
+
+    // Загружаем вопросы при загрузке страницы
+    loadQuestions();
   </script>
 </body>
 </html>
