@@ -43,11 +43,11 @@ def log_message():
 
 if __name__ == '__main__':
     # Настройка SSL-контекста
-    context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+    #context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
     #context.load_cert_chain(certfile='C:/Certbot/live/mylifespanlog.com/fullchain.pem', 
     #                       keyfile='C:/Certbot/live/mylifespanlog.com/privkey.pem')
     
-    context.load_cert_chain(certfile='cert.pem', keyfile='key.pem')    
-    app.run(host='0.0.0.0', port=5000, debug=False, threaded=True, ssl_context=context)
+    #context.load_cert_chain(certfile='cert.pem', keyfile='key.pem')    
+    #app.run(host='0.0.0.0', port=5000, debug=False, threaded=True, ssl_context=context)
     
-    #app.run(host='0.0.0.0', port=5000, debug=False, threaded=True)
+    app.run(host='0.0.0.0', port=5000, debug=False, threaded=True)
