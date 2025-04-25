@@ -93,7 +93,7 @@
     </div>
   </div>
 
-  <script>
+  <script>    
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.getRegistrations().then(registrations => {
         for (let registration of registrations) {
@@ -105,7 +105,7 @@
         console.error('Error unregistering Service Worker:', error);
       });
     }
-
+    
     let currentLanguage = localStorage.getItem('language') || 'en';
     let translations = {};
     let answers = {};
@@ -125,7 +125,7 @@
     }
 
     function logData(message) {
-      console.log(message);
+      //console.log(message);
 
       if (typeof message !== 'string') {
         console.error('logData: message must be a string');
@@ -268,7 +268,20 @@
         .replace('{days}', days);
     }
 
-    function drawTimeline(birthDate, workDate, sexualLifeDate, drivingDate, today) {
+    function formatAgeShort(years, months, lang, type = 'age') {
+      if (lang === 'ru') {
+        const forms = type === 'age' || type === 'sleep' || type === 'sexualLife' || type === 'driving' ? ['год', 'года', 'лет'] : ['год', 'года', 'лет'];
+        const monthForms = ['месяц', 'месяца', 'месяцев'];
+        return translations.interface[lang][type]
+          .replace('{years}', `${years} ${formatRussianPlural(years, forms)}`)
+          .replace('{months}', `${months} ${formatRussianPlural(months, monthForms)}`);
+      }
+      return translations.interface[lang][type]
+        .replace('{years}', years)
+        .replace('{months}', months);
+    }
+
+    function drawTimeline() {
       const canvas = document.getElementById('timelineCanvas');
       const ctx = canvas.getContext('2d');
       const width = canvas.width;
@@ -276,12 +289,23 @@
 
       ctx.clearRect(0, 0, width, height);
 
+      const birthDate = answers['question0'] ? new Date(answers['question0']) : null;
+
       if (!birthDate) return;
+
+      const workDate = answers['question1'] ? new Date(answers['question1']) : null;
+      const profDate = answers['question2'] ? new Date(new Date(answers['question2']).getFullYear(), new Date(answers['question2']).getMonth(), 1) : null;
+      const sexualLifeDate = answers['question3'] ? new Date(new Date(answers['question3']).getFullYear(), new Date(answers['question3']).getMonth(), 1) : null;
+      const partnerDate = answers['question4'] ? new Date(new Date(answers['question4']).getFullYear(), new Date(answers['question4']).getMonth(), 1) : null;
+      const drivingDate = answers['question5'] ? new Date(new Date(answers['question5']).getFullYear(), new Date(answers['question5']).getMonth(), 1) : null;
+      const today = new Date();
 
       const margin = 50;
       const lifeLineX = width / 2 - 60;
       const workLineX = width / 2 - 20;
+      const profLineX = width / 2 - 10;
       const sexualLifeLineX = width / 2 + 20;
+      const partnerLineX = width / 2 + 30;
       const drivingLineX = width / 2 + 60;
       const topY = 50;
       const bottomY = height - 50;
@@ -327,6 +351,19 @@
         ctx.fillText(workDate.getFullYear(), workLineX + 15, workY + 5);
       }
 
+      if (profDate && profDate >= birthDate && profDate <= today) {
+        const daysFromBirthToProf = (profDate - birthDate) / (1000 * 60 * 60 * 24);
+        const profY = bottomY - daysFromBirthToProf * pixelsPerDay;
+        ctx.beginPath();
+        ctx.moveTo(profLineX, profY);
+        ctx.lineTo(profLineX, topY);
+        ctx.strokeStyle = '#20f705';
+        ctx.lineWidth = 3;
+        ctx.stroke();
+        ctx.textAlign = 'left';
+        ctx.fillText(profDate.getFullYear(), profLineX + 15, profY + 5);
+      }
+
       if (sexualLifeDate && sexualLifeDate >= birthDate && sexualLifeDate <= today) {
         const daysFromBirthToSexualLife = (sexualLifeDate - birthDate) / (1000 * 60 * 60 * 24);
         const sexualLifeY = bottomY - daysFromBirthToSexualLife * pixelsPerDay;
@@ -338,6 +375,19 @@
         ctx.stroke();
         ctx.textAlign = 'left';
         ctx.fillText(sexualLifeDate.getFullYear(), sexualLifeLineX + 15, sexualLifeY + 5);
+      }
+
+      if (partnerDate && partnerDate >= birthDate && partnerDate <= today) {
+        const daysFromBirthToPartner = (partnerDate - birthDate) / (1000 * 60 * 60 * 24);
+        const partnerY = bottomY - daysFromBirthToPartner * pixelsPerDay;
+        ctx.beginPath();
+        ctx.moveTo(partnerLineX, partnerY);
+        ctx.lineTo(partnerLineX, topY);
+        ctx.strokeStyle = '#ff8070';
+        ctx.lineWidth = 3;
+        ctx.stroke();
+        ctx.textAlign = 'left';
+        ctx.fillText(partnerDate.getFullYear(), partnerLineX + 15, partnerY + 5);
       }
 
       if (drivingDate && drivingDate >= birthDate && drivingDate <= today) {
@@ -376,9 +426,11 @@
 
       const eventNames = {
         0: 'DOB',
-        1: 'BOW',
-        2: 'BOS',
-        3: 'BOD'
+        1: 'WRK',
+        2: 'PRF',
+        3: 'SEX',
+        4: 'PRT',
+        5: 'DRV'
       };
       const eventName = eventNames[index] || 'Unknown';
       if (input.value) {
@@ -389,7 +441,7 @@
         if (index === 0) {
           resultDiv.innerText = translations.interface[lang].requiredField;
         }
-        drawTimeline(null, null, null, null, today);
+        drawTimeline();
         return;
       }
 
@@ -401,16 +453,33 @@
         resultDiv.innerText = translations.interface[lang].invalidDate;
         return;
       }
+
       if (index > 0 && answers['question0'] && date < new Date(answers['question0'])) {
         if (index === 1) {
           resultDiv.innerText = translations.interface[lang].invalidWorkDate;
         } else if (index === 2) {
+          if (answers['question1'] && date < new Date(answers['question1'])) {
+            resultDiv.innerText = translations.interface[lang].invalidProfDate;
+          } else {
+            resultDiv.innerText = translations.interface[lang].invalidProfDateAccBD;
+          }
+        } else if (index === 3) {
           resultDiv.innerText = translations.interface[lang].invalidSexualLifeDate;
-        } else {
+        } else if (index === 4) {
+          if (answers['question3'] && date < new Date(answers['question3'])) {
+            resultDiv.innerText = translations.interface[lang].invalidPartnerLifeDate;
+          } else {
+            resultDiv.innerText = translations.interface[lang].invalidPartnerLifeDateAccBD;
+          }
+        } else if (index === 5) {
           resultDiv.innerText = translations.interface[lang].invalidDrivingDate;
+        } else {
+          return
         }
         return;
       }
+
+      const birthDate = new Date(answers['question0']);
 
       const question = translations.questions[index];
       if (question.resultType === 'age') {
@@ -425,20 +494,16 @@
           .replace('{age}', ageText)
           .replace('{sleep}', sleepText);
 
-        const workDate = answers['question1'] ? new Date(answers['question1']) : null;
-        const sexualLifeDate = answers['question2'] ? new Date(new Date(answers['question2']).getFullYear(), new Date(answers['question2']).getMonth(), 1) : null;
-        const drivingDate = answers['question3'] ? new Date(new Date(answers['question3']).getFullYear(), new Date(answers['question3']).getMonth(), 1) : null;
-        drawTimeline(date, workDate, sexualLifeDate, drivingDate, today);
+        drawTimeline();
 
         if (index < translations.questions.length - 1) {
           document.getElementById(`q${index + 1}_date`).focus();
         }
       } else if (question.resultType === 'workExperience') {
-        const birthDate = new Date(answers['question0']);
         const workExperience = calculateAge(date, today);
         const ageDays = (today - birthDate) / (1000 * 60 * 60 * 24);
         const workDays = (today - date) / (1000 * 60 * 60 * 24);
-        const workPercentage = ((workDays / ageDays) * 100).toFixed(2);
+        const workPercentage = ((workDays / ageDays) * 100).toFixed(1);
         const workText = formatAge(workExperience.years, workExperience.months, workExperience.days, lang, 'work');
         
         const yearsWorked = (today - date) / (1000 * 60 * 60 * 24 * 365.25);
@@ -449,20 +514,41 @@
           .replace('{percentage}', workPercentage)
           .replace('{hours}', totalHours.toLocaleString());
 
-        const sexualLifeDate = answers['question2'] ? new Date(new Date(answers['question2']).getFullYear(), new Date(answers['question2']).getMonth(), 1) : null;
-        const drivingDate = answers['question3'] ? new Date(new Date(answers['question3']).getFullYear(), new Date(answers['question3']).getMonth(), 1) : null;
-        drawTimeline(new Date(answers['question0']), date, sexualLifeDate, drivingDate, today);
+        drawTimeline();
 
         if (index < translations.questions.length - 1) {
           document.getElementById(`q${index + 1}_date`).focus();
         }
+      } else if (question.resultType === 'professionalExperience') {
+        const profExperience = calculateAge(date, today);
+        const ageDays = (today - birthDate) / (1000 * 60 * 60 * 24);
+        const profDays = (today - date) / (1000 * 60 * 60 * 24);
+        const profPercentage = ((profDays / ageDays) * 100).toFixed(1);
+        const profText = formatAge(profExperience.years, profExperience.months, profExperience.days, lang, 'prof');
+        const yearsProfWorked = (today - date) / (1000 * 60 * 60 * 24 * 365.25);
+        const totalHours = Math.round(yearsProfWorked * 8 * 5 * 52);
+
+        const workExperience = new Date(answers['question1']);
+        const workDays = (today - workExperience) / (1000 * 60 * 60 * 24);
+        const profWorkPercentage = ((profDays / workDays) * 100).toFixed(1);
+
+        resultDiv.innerText = translations.interface[lang].profResult
+          .replace('{prof}', profText)
+          .replace('{percentage}', profPercentage)
+          .replace('{profWorkPercentage}', profWorkPercentage)
+          .replace('{hours}', totalHours.toLocaleString());
+
+        drawTimeline();
+
+        if (index < translations.questions.length - 1) {
+          document.getElementById(`q${index + 1}_date`).focus();
+        }        
       } else if (question.resultType === 'sexualLifeExperience') {
-        const birthDate = new Date(answers['question0']);
         const sexualLifeExperience = calculateAge(date, today);
         const ageDays = (today - birthDate) / (1000 * 60 * 60 * 24);
         const sexualLifeDays = (today - date) / (1000 * 60 * 60 * 24);
-        const sexualLifePercentage = ((sexualLifeDays / ageDays) * 100).toFixed(2);
-        const sexualLifeText = formatAge(sexualLifeExperience.years, sexualLifeExperience.months, sexualLifeExperience.days, lang, 'sexualLife');
+        const sexualLifePercentage = ((sexualLifeDays / ageDays) * 100).toFixed(1);
+        const sexualLifeText = formatAgeShort(sexualLifeExperience.years, sexualLifeExperience.months, lang, 'sexualLife');
 
         const firstChildDate = new Date(date);
         firstChildDate.setMonth(firstChildDate.getMonth() + 9);
@@ -472,38 +558,54 @@
             .replace('{percentage}', sexualLifePercentage) + '\n' +
             translations.interface[lang].potentialChildren.replace('{children}', 0);
         } else {
-          const daysSinceFirstChild = (today - firstChildDate) / (1000 * 60 * 60 * 24);
           const cycleDays = 11 * 30.42;
-          const potentialChildren = Math.floor(daysSinceFirstChild / cycleDays) + 1;
-
+          const daysAfterGestation = (today - firstChildDate) / (1000 * 60 * 60 * 24);
+          const potentialChildren = daysAfterGestation >= 0 ? Math.floor(daysAfterGestation / cycleDays) + 1 : 0;
+          
           resultDiv.innerText = translations.interface[lang].sexualLifeResult
             .replace('{sexualLife}', sexualLifeText)
             .replace('{percentage}', sexualLifePercentage) + '\n' +
             translations.interface[lang].potentialChildren.replace('{children}', potentialChildren);
         }
 
-        const workDate = answers['question1'] ? new Date(answers['question1']) : null;
-        const drivingDate = answers['question3'] ? new Date(new Date(answers['question3']).getFullYear(), new Date(answers['question3']).getMonth(), 1) : null;
-        drawTimeline(new Date(answers['question0']), workDate, date, drivingDate, today);
+        drawTimeline();
+
+        if (index < translations.questions.length - 1) {
+          document.getElementById(`q${index + 1}_date`).focus();
+        }
+      } else if (question.resultType === 'partnerLifeExperience') {
+        const partnerLifeExperience = calculateAge(date, today);
+        const ageDays = (today - birthDate) / (1000 * 60 * 60 * 24);
+        const partnerLifeDays = (today - date) / (1000 * 60 * 60 * 24);
+        const partnerLifePercentage = ((partnerLifeDays / ageDays) * 100).toFixed(1);
+        const partnerLifeText = formatAgeShort(partnerLifeExperience.years, partnerLifeExperience.months, lang, 'partnerLife');
+
+        const sexExperience = new Date(answers['question3']);
+        const sexualLifeDays = (today - sexExperience) / (1000 * 60 * 60 * 24);
+        const partnerPercentage = ((partnerLifeDays / sexualLifeDays) * 100).toFixed(1);
+
+        resultDiv.innerText = translations.interface[lang].partnerLifeResult
+            .replace('{partnerLife}', partnerLifeText)
+            .replace('{percentage}', partnerLifePercentage)
+            .replace('{partnerPercentage}', partnerPercentage);
+
+        drawTimeline();
 
         if (index < translations.questions.length - 1) {
           document.getElementById(`q${index + 1}_date`).focus();
         }
       } else if (question.resultType === 'drivingExperience') {
-        const birthDate = new Date(answers['question0']);
         const drivingExperience = calculateAge(date, today);
         const ageDays = (today - birthDate) / (1000 * 60 * 60 * 24);
         const drivingDays = (today - date) / (1000 * 60 * 60 * 24);
-        const drivingPercentage = ((drivingDays / ageDays) * 100).toFixed(2);
-        const drivingText = formatAge(drivingExperience.years, drivingExperience.months, drivingExperience.days, lang, 'driving');
+        const drivingPercentage = ((drivingDays / ageDays) * 100).toFixed(1);
+        const drivingText = formatAgeShort(drivingExperience.years, drivingExperience.months, lang, 'driving');
 
         resultDiv.innerText = translations.interface[lang].drivingResult
           .replace('{driving}', drivingText)
           .replace('{percentage}', drivingPercentage);
 
-        const workDate = answers['question1'] ? new Date(answers['question1']) : null;
-        const sexualLifeDate = answers['question2'] ? new Date(new Date(answers['question2']).getFullYear(), new Date(answers['question2']).getMonth(), 1) : null;
-        drawTimeline(new Date(answers['question0']), workDate, sexualLifeDate, date, today);
+        drawTimeline();
 
         if (index < translations.questions.length - 1) {
           document.getElementById(`q${index + 1}_date`).focus();
@@ -520,11 +622,10 @@
     document.getElementById('restartButton').addEventListener('click', () => {
       answers = {};
       updateLanguage(currentLanguage);
-      drawTimeline(null, null, null, null, new Date());
+      drawTimeline();
     });
 
     getUserIP();
     loadQuestions();
-  </script><p><font size="-7">v2504250</font></p>
-</body>
+  </script><p><font size="-7"><a href="mailto:sza@ukr.net">v2504252</a></font></p>
 </html>

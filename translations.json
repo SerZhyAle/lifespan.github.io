@@ -4,21 +4,31 @@
       "title": "Life Span",
       "ageResult": "Your age: {age}\nTime spent sleeping: {sleep}",
       "workResult": "Work experience: {work}\nYou have been working for {percentage}% of your life\nTotal hours worked: {hours}",
+      "profResult": "Prof experience: {prof}\nYou have been prof for {percentage}% of your life\nAnd {profWorkPercentage}% of your work experience\nTotal hours in prof: {hours}",
       "sexualLifeResult": "Sexual life experience: {sexualLife}\nYou have been sexually active for {percentage}% of your life",
+      "partnerLifeResult": "Current relationship: {partnerLife}\nYou have this partner for {percentage}% of your life\nAnd {partnerPercentage}% of your sexual life",
       "drivingResult": "Driving experience: {driving}\nYou have been driving for {percentage}% of your life",
       "potentialChildren": "Number of children you could potentially have: {children}",
       "age": "{years} years, {months} months, {days} days",
       "work": "{years} years, {months} months, {days} days",
-      "sexualLife": "{years} years, {months} months, {days} days",
-      "driving": "{years} years, {months} months, {days} days",
+      "prof": "{years} years, {months} months, {days} days",
+      "sexualLife": "{years} years, {months} months",
+      "partnerLife": "{years} years, {months} months",
+      "driving": "{years} years, {months} months",
       "sleep": "{years} years, {months} months, {days} days",
       "invalidDate": "Invalid date",
       "invalidWorkDate": "Date cannot be before birth date",
+      "invalidProfDate": "Date cannot be before first working date",
+      "invalidProfDateAccBD": "Date cannot be before birth date",
       "invalidSexualLifeDate": "Date cannot be before birth date",
+      "invalidPartnerLifeDate": "Date cannot be before beginning of sexual life",
+      "invalidPartnerLifeDateAccBD": "Date cannot be before birth date",
       "invalidDrivingDate": "Date cannot be before birth date",
       "requiredField": "This field is required",
       "restart": "Restart",
       "workHours": "Total hours worked: {hours}",
+      "profHours": "Total hours in prof: {hours}",
+      "partnerHours": "Total hours with partner: {hours}",
       "sleepTime": "Time spent sleeping: {sleep}",
       "timelineTitle": "Life Timeline"
     },
@@ -26,21 +36,31 @@
       "title": "Продолжительность жизни",
       "ageResult": "Ваш возраст: {age}\nВремя, потраченное на сон: {sleep}",
       "workResult": "Трудовой стаж: {work}\nВы работаете {percentage}% своей жизни\nВсего отработано часов: {hours}",
+      "profResult": "Профессиональный стаж: {prof}\nВы по пройессии {percentage}% своей жизни\nИ {profWorkPercentage}% от общего опыта работы\nВсего отработано часов: {hours}",
       "sexualLifeResult": "Стаж половой жизни: {sexualLife}\nВы ведете половую жизнь {percentage}% своей жизни",
+      "partnerLifeResult": "Срок отношений: {partnerLife}\nВаши текушие отношения длятся {percentage}% от всей жизни\nИ {partnerPercentage}% от срока половой жизни",
       "drivingResult": "Водительский стаж: {driving}\nВы водите {percentage}% своей жизни",
       "potentialChildren": "Число детей, которые потенциально могли бы у тебя быть: {children}",
       "age": "{years}, {months}, {days}",
       "work": "{years}, {months}, {days}",
-      "sexualLife": "{years}, {months}, {days}",
-      "driving": "{years}, {months}, {days}",
+      "prof": "{years}, {months}, {days}",
+      "sexualLife": "{years}, {months}",
+      "partnerLife": "{years}, {months}",
+      "driving": "{years}, {months}",
       "sleep": "{years}, {months}, {days}",
       "invalidDate": "Неверная дата",
       "invalidWorkDate": "Дата не может быть раньше даты рождения",
+      "invalidProfDate": "Дата не может быть раньше даты первой работы",
+      "invalidProfDateAccBD": "Дата не может быть раньше даты рождения",
       "invalidSexualLifeDate": "Дата не может быть раньше даты рождения",
+      "invalidPartnerLifeDate": "Дата не может быть раньше даты начала половой жизни",
+      "invalidPartnerLifeDateAccBD": "Дата не может быть раньше даты рождения",
       "invalidDrivingDate": "Дата не может быть раньше даты рождения",
       "requiredField": "Это поле обязательно",
-      "restart": "Пройти заново",
+      "restart": "Сбросить заново",
       "workHours": "Всего отработано часов: {hours}",
+      "profHours": "Всего часов по профессии: {hours}",
+      "partnerHours": "Всего часов в текущих отношениях: {hours}",
       "sleepTime": "Время, потраченное на сон: {sleep}",
       "timelineTitle": "Линия жизни"
     }
@@ -71,6 +91,18 @@
       }
     },
     {
+      "type": "date",
+      "resultType": "professionalExperience",
+      "title": {
+        "en": "Professional Experience",
+        "ru": "Профессиональный стаж"
+      },
+      "text": {
+        "en": "When did you start on current profession?",
+        "ru": "Когда вы начали работать в текущей профессии?"
+      }
+    },
+    {
       "type": "month",
       "resultType": "sexualLifeExperience",
       "title": {
@@ -80,6 +112,18 @@
       "text": {
         "en": "When did you start your sexual life?",
         "ru": "Когда вы начали жить половой жизнью?"
+      }
+    },
+    {
+      "type": "month",
+      "resultType": "partnerLifeExperience",
+      "title": {
+        "en": "Current Partner Experience",
+        "ru": "С текущим партнёром"
+      },
+      "text": {
+        "en": "When did you begin your current relationship?",
+        "ru": "Когда начались текущие отношения?"
       }
     },
     {

@@ -6,7 +6,7 @@ from datetime import datetime
 import ssl
 
 app = Flask(__name__)
-#CORS(app, resources={r"/log": {"origins": "https://serzhyale.github.io"}})
+#CORS(app, resources={r"/log": {"origins": "http://193.178.50.43:5000/log"}})
 CORS(app, resources={r"/log": {"origins": "*"}})
 
 LOG_FILE = "logs.txt"
