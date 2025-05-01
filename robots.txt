@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /index.html
+Disallow: /translations.json
+Disallow: /manifest.json
+Disallow: /LICENSE
+Disallow: /icon-192x192.png
+Disallow: /icon-512x512.png
+Disallow: /server.py
+Disallow: /cdn-cgi/
+Sitemap: https://thelifespan.online/sitemap.xml
